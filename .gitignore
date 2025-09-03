@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+ENV/
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite database
+*.sqlite3
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
