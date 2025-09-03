@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Test Upload{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-bug"></i> Test Upload
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="test_file" class="form-label">Test File</label>
+                            <input type="file" name="test_file" id="test_file" class="form-control" accept=".pdf" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-upload"></i> Test Upload
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'dashboard:admin_dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

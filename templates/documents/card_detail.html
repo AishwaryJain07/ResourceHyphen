@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ parent_card.card_name }} - Subcards{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-folder-open"></i> {{ parent_card.card_name }}</h2>
+                    <p class="text-muted mb-0">Card {{ parent_card.card_number }} - Subcards Overview</p>
+                </div>
+                <div>
+                    {% if is_admin %}
+                        <a href="{% url 'documents:add_subcard' %}" class="btn btn-success me-2">
+                            <i class="fas fa-plus"></i> Add Subcard
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'documents:card_overview' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Cards
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subcards Grid -->
+    {% if subcards %}
+        <div class="row">
+            {% for subcard in subcards %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 subcard-item">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">
+                            <i class="fas fa-file-alt"></i> {{ subcard.subcard_name }}
+                        </h6>
+                        <span class="badge bg-light text-dark">{{ subcard.subcard_number }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-files-o fa-2x text-info"></i>
+                            <h5 class="mt-2">{{ subcard.document_count }} Document(s)</h5>
+                        </div>
+                        
+                        {% if subcard.documents %}
+                            <div class="document-list">
+                                <h6 class="text-muted mb-2">Recent Documents:</h6>
+                                {% for doc in subcard.documents|slice:":3" s%}
+                                <div class="document-item mb-2 p-2 bg-light rounded">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-pdf text-danger me-1"></i>
+                                            <small class="fw-bold">{{ doc.title|truncatechars:20 }}</small>
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'documents:view_pdf' doc.id %}" 
+                                               class="btn btn-outline-primary btn-sm" 
+                                               target="_blank" 
+                                               title="View PDF">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'documents:download_pdf' doc.id %}" 
+                                               class="btn btn-outline-success btn-sm" 
+                                               title="Download PDF">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            {% if is_admin %}
+                                            <form method="post" 
+                                                  action="{% url 'documents:delete_pdf' doc.id %}" 
+                                                  style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" 
+                                                        class="btn btn-outline-danger btn-sm" 
+                                                        onclick="return confirm('Delete this document?')"
+                                                        title="Delete PDF">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ doc.uploaded_at|date:"M d, Y" }}</small>
+                                </div>
+                                {% endfor %}
+                                
+                                {% if subcard.documents.count > 3 %}
+                                <small class="text-muted">
+                                    <i class="fas fa-ellipsis-h"></i> and {{ subcard.documents.count|add:"-3" }} more...
+                                </small>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                <p class="mb-0">No documents yet</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if is_admin %}
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'documents:edit_subcard' subcard.id %}" 
+                               class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form method="post" 
+                                  action="{% url 'documents:delete_subcard' subcard.id %}" 
+                                  style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="btn btn-outline-danger btn-sm" 
+                                        onclick="return confirm('Delete this subcard?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-file-alt fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">No Subcards Available</h4>
+            <p class="text-muted">No subcards have been created for this parent card yet.</p>
+            {% if is_admin %}
+                <a href="{% url 'documents:add_subcard' %}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Create First Subcard
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.subcard-item {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.subcard-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    border-color: #17a2b8;
+}
+
+.document-item {
+    transition: background-color 0.2s ease;
+}
+
+.document-item:hover {
+    background-color: #e9ecef !important;
+}
+
+.btn-group-sm .btn {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.75rem;
+}
+</style>
+{% endblock %}

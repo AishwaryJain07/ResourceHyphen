@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+<!-- v1.1 - File upload form for admin users -->
+
+{% block title %}Add File - Login System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-upload"></i> Upload PDF Document
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Document Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.pdf_file.id_for_label }}" class="form-label">PDF File</label>
+                            {{ form.pdf_file }}
+                            <div class="form-text">Maximum file size: 10MB. Only PDF files are allowed.</div>
+                            {% if form.pdf_file.errors %}
+                                <div class="text-danger small">{{ form.pdf_file.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.parent_card_id.id_for_label }}" class="form-label">Parent Card</label>
+                                {{ form.parent_card_id }}
+                                {% if form.parent_card_id.errors %}
+                                    <div class="text-danger small">{{ form.parent_card_id.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.subcard_id.id_for_label }}" class="form-label">Subcard</label>
+                                {{ form.subcard_id }}
+                                {% if form.subcard_id.errors %}
+                                    <div class="text-danger small">{{ form.subcard_id.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'dashboard:admin_dashboard' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-upload"></i> Upload File
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

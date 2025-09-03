@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+<!-- v1.1 - OTP verification page -->
+
+{% block title %}Verify OTP - Login System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white text-center">
+                <h4 class="mb-0">Verify OTP</h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    We've sent a 6-digit OTP to your email address. Please enter it below to verify your identity.
+                    <br><small class="text-warning">OTP is valid for 5 minutes.</small>
+                </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.otp.id_for_label }}" class="form-label">6-Digit OTP</label>
+                        {{ form.otp }}
+                        {% if form.otp.errors %}
+                            <div class="text-danger small">{{ form.otp.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-info w-100 mb-3">Verify OTP</button>
+                </form>
+                
+                <div class="text-center">
+                    <p class="mb-0">
+                        Didn't receive OTP? 
+                        <a href="{% url 'accounts:forgot_password' %}" class="text-decoration-none">Resend</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
